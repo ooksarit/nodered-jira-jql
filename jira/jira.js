@@ -49,15 +49,14 @@ module.exports = function(RED) {
         var jql = config.jql;
         var server = RED.nodes.getNode(config.server);
         var maxIssues = config.pagesize || 1000;
-        var property_key=config.key;
-        var property_body=config.body;
+
 
         this.on('input', function(msg) {
             this.log("Performing search '" + jql + "'");
             node.perform(jql, function(issue, index, array) {
                 var msg={};
-                msg[property_key] = issue.key;
-                msg[property_body] = issue;
+                msg.topic = issue.key;
+                msg.payload = issue;
                 node.send(msg);
 
             });

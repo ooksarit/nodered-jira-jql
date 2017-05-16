@@ -1,367 +1,430 @@
+<!--
+//
+//     Copyright (C) 2017  Michael Kolb
+//
+//     This program is free software: you can redistribute it and/or modify
+//     it under the terms of the GNU General Public License as published by
+//     the Free Software Foundation, either version 3 of the License, or
+//     (at your option) any later version.
+//
+//     This program is distributed in the hope that it will be useful,
+//     but WITHOUT ANY WARRANTY; without even the implied warranty of
+//     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//     GNU General Public License for more details.
+//
+//     You should have received a copy of the GNU General Public License
+//     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+
+<!-- *************** Server Node *************** -->
 <script type="text/javascript">
-    RED.nodes.registerType('jira-server', {
-        category: 'config',
-        defaults: {
-            url: {
-                required: true
-            },
-            name: {
-                value: "",
-                required: true
-            }
-        },
-        credentials: {
-            username: {
-                type: "text"
-            },
-            password: {
-                type: "password"
-            }
-        },
-        label: function() {
-            return this.name ||  "jira-server";
-        }
-    });
-
-
-    RED.nodes.registerType('jira-search', {
-        category: 'jira',
-        color: '#a6bbcf',
-        defaults: {
-            name: {
-                value: ""
-            },
-            server: {
-                value: "",
-                type: "jira-server"
-            },
-            jql: {
-                value: ""
-            },
-            pagesize: {
-                value: 1000,
-                validate: RED.validators.number()
-            },
-            body: {
-                value: "payload"
-            },
-            key: {
-                value: "topic"
-            }
-        },
-        inputs: 1,
-        outputs: 1,
-        icon: "db.png",
-        label: function() {
-            return this.name || "jira-search";
-        }
-    });
-
-
-    RED.nodes.registerType('jira-issue-update', {
-        category: 'jira',
-        color: '#a6bbcf',
-        defaults: {
-            name: {
-                value: ""
-            },
-            server: {
-                value: "",
-                type: "jira-server"
-            },
-        },
-        inputs: 1,
-        outputs: 1,
-        icon: "db.png",
-        label: function() {
-            return this.name || "jira-issue-update";
-        }
-    });
-
-
-    RED.nodes.registerType('jira-issue-get', {
-        category: 'jira',
-        color: '#a6bbcf',
-        defaults: {
-            name: {
-                value: ""
-            },
-            server: {
-                value: "",
-                type: "jira-server"
-            },
-            body: {
-                value: "payload"
-            },
-            key: {
-                value: "topic"
-            }
-        },
-        inputs: 1,
-        outputs: 1,
-        icon: "db.png",
-        label: function() {
-            return this.name || "jira-issue-get";
-        }
-    });
-
-    RED.nodes.registerType('jira-issue-create', {
-        category: 'jira',
-        color: '#a6bbcf',
-        defaults: {
-            name: {
-                value: ""
-            },
-            server: {
-                value: "",
-                type: "jira-server"
-            },
-        },
-        inputs: 1,
-        outputs: 1,
-        icon: "db.png",
-        label: function() {
-            return this.name || "jira-issue-create";
-        }
-    });
-
-
-    RED.nodes.registerType('jira-issue-comment-add', {
-        category: 'jira',
-        color: '#a6bbcf',
-        defaults: {
-            name: {
-                value: ""
-            },
-            server: {
-                value: "",
-                type: "jira-server"
-            },
-        },
-        inputs: 1,
-        outputs: 1,
-        icon: "db.png",
-        label: function() {
-            return this.name || "jira-issue-comment-add";
-        }
-    });
-
-
-    RED.nodes.registerType('jira-issue-comment-update', {
-        category: 'jira',
-        color: '#a6bbcf',
-        defaults: {
-            name: {
-                value: ""
-            },
-            server: {
-                value: "",
-                type: "jira-server"
-            },
-        },
-        inputs: 1,
-        outputs: 1,
-        icon: "db.png",
-        label: function() {
-            return this.name || "jira-issue-comment-update";
-        }
-    });
+  RED.nodes.registerType('jira-server', {
+    category: 'config',
+    defaults: {
+      url: {
+        required: true
+      },
+      name: {
+        value: "",
+        required: true
+      }
+    },
+    credentials: {
+      username: {
+        type: "text"
+      },
+      password: {
+        type: "password"
+      }
+    },
+    label: function() {
+      return this.name ||  "jira-server";
+    }
+  });
 </script>
 <script type="text/x-red" data-template-name="jira-server">
-    <div class="form-row">
-        <label for="node-config-input-name"><i class="icon-tag"></i> Name</label>
-        <input type="text" id="node-config-input-name" placeholder="Name">
-    </div>
-    <div class="form-row">
-        <label for="node-config-input-url"><i class="icon-white-globe"></i> URL</label>
-        <input type="text" id="node-config-input-url" placeholder="http://localhost/rest/api/2/">
-    </div>
-    <div class="form-row">
-        <label for="node-config-input-username"><i class="icon-tag"></i> Username</label>
-        <input type="text" id="node-config-input-username" placeholder="">
-    </div>
-    <div class="form-row">
-        <label for="node-config-input-password"><i class="icon-tag"></i> Password</label>
-        <input type="password" id="node-config-input-password" placeholder="">
-    </div>
+  <div class="form-row">
+    <label for="node-config-input-name"><i class="icon-tag"></i> Name</label>
+    <input type="text" id="node-config-input-name" placeholder="Name">
+  </div>
+  <div class="form-row">
+    <label for="node-config-input-url"><i class="icon-white-globe"></i> URL</label>
+    <input type="text" id="node-config-input-url" placeholder="http://localhost/rest/api/2/">
+  </div>
+  <div class="form-row">
+    <label for="node-config-input-username"><i class="icon-tag"></i> Username</label>
+    <input type="text" id="node-config-input-username" placeholder="">
+  </div>
+  <div class="form-row">
+    <label for="node-config-input-password"><i class="icon-tag"></i> Password</label>
+    <input type="password" id="node-config-input-password" placeholder="">
+  </div>
 </script>
 
 
+
+<!-- *************** Search Node *************** -->
+<script type="text/javascript">
+  RED.nodes.registerType('jira-search', {
+    category: 'jira',
+    color: '#a6bbcf',
+    defaults: {
+      name: {
+        value: ""
+      },
+      server: {
+        value: "",
+        type: "jira-server"
+      },
+      jql: {
+        value: ""
+      },
+      pagesize: {
+        value: 1000,
+        validate: RED.validators.number()
+      },
+      body: {
+        value: "payload"
+      },
+      key: {
+        value: "topic"
+      }
+    },
+    inputs: 1,
+    outputs: 1,
+    icon: "db.png",
+    label: function() {
+      return this.name || "jira-search";
+    }
+  });
+</script>
+
 <script type="text/x-red" data-template-name="jira-search">
-    <div class="form-row">
-        <label for="node-input-name"><i class="icon-tag"></i> Name</label>
-        <input type="text" id="node-input-name" placeholder="Name">
-    </div>
-    <div class="form-row">
-        <label for="node-input-server"><i class="icon-db"></i> Server</label>
-        <input type="text" id="node-input-server" placeholder="Server">
-    </div>
-    <div class="form-row">
-        <label for="node-input-jql"><i class="icon-function"></i> JQL</label>
-        <input type="text" id="node-input-jql" placeholder="project = TEST and labels in ('findme')">
-    </div>
-    <div class="form-row">
-        <label for="node-input-pagesize"><i class="icon-tag"></i> Pagesize</label>
-        <input type="text" id="node-input-pagesize" value="1000">
-    </div>
-    <div class="form-row">
-        <label for="node-input-key"><i class="icon-db"></i> Attr. Issue Key</label>
-        <input type="text" id="node-input-key" placeholder="Property">
-    </div>
-    <div class="form-row">
-        <label for="node-input-body"><i class="icon-db"></i> Attr. Issue</label>
-        <input type="text" id="node-input-body" placeholder="Property">
-    </div>
+  <div class="form-row">
+    <label for="node-input-name"><i class="icon-tag"></i> Name</label>
+    <input type="text" id="node-input-name" placeholder="Name">
+  </div>
+  <div class="form-row">
+    <label for="node-input-server"><i class="icon-db"></i> Server</label>
+    <input type="text" id="node-input-server" placeholder="Server">
+  </div>
+  <div class="form-row">
+    <label for="node-input-jql"><i class="icon-function"></i> JQL</label>
+    <input type="text" id="node-input-jql" placeholder="project = TEST and labels in ('findme')">
+  </div>
+  <div class="form-row">
+    <label for="node-input-pagesize"><i class="icon-tag"></i> Pagesize</label>
+    <input type="text" id="node-input-pagesize" value="1000">
+  </div>
 </script>
 
 <script type="text/x-red" data-help-name="jira-search">
-    <p>A node to perform JQL searches via JIRAs REST API</p>
+  <p>A node to perform JQL searches via JIRAs REST API.</p>
+  <b>Configuration</b>
+  <ul>
+    <li>
+      <b>Name</b> Choose any name to identify your node.
+    </li>
+    <li>
+      <b>Server</b> Choose the JIRA server instance to use.
+    </li>
+    <li>
+      <b>JQL</b> The <a href="https://confluence.atlassian.com/jirasoftwarecloud/advanced-searching-764478330.html#Advancedsearching-ConstructingJQLqueries" target="_blank">JQL query</a> to execute.
+    </li>
+    <li>
+      <b>Pagesize</b> How many issues to fetch in a single call to the JIRA API.
+    </li>
+  </ul>
+  <b>Input</b>
+  <ul>
+    <li>
+      Any message will trigger the search.
+    </li>
+  </ul>
+  <b>Output</b>
+  <ul>
+    <li>
+      <code>msg.payload</code> contains the issue.
+    </li>
+    <li>
+      <code>msg.topic</code> contains the issue key.
+    </li>
+  </ul>
 </script>
 
-
+<!-- *************** Issue-Update Node *************** -->
+<script type="text/javascript">
+  RED.nodes.registerType('jira-issue-update', {
+    category: 'jira',
+    color: '#a6bbcf',
+    defaults: {
+      name: {
+        value: ""
+      },
+      server: {
+        value: "",
+        type: "jira-server"
+      },
+    },
+    inputs: 1,
+    outputs: 1,
+    icon: "db.png",
+    label: function() {
+      return this.name || "jira-issue-update";
+    }
+  });
+</script>
 <script type="text/x-red" data-template-name="jira-issue-update">
-    <div class="form-row">
-        <label for="node-input-name"><i class="icon-tag"></i> Name</label>
-        <input type="text" id="node-input-name" placeholder="Name">
-    </div>
-    <div class="form-row">
-        <label for="node-input-server"><i class="icon-db"></i> Server</label>
-        <input type="text" id="node-input-server" placeholder="Server">
-    </div>
+  <div class="form-row">
+    <label for="node-input-name"><i class="icon-tag"></i> Name</label>
+    <input type="text" id="node-input-name" placeholder="Name">
+  </div>
+  <div class="form-row">
+    <label for="node-input-server"><i class="icon-db"></i> Server</label>
+    <input type="text" id="node-input-server" placeholder="Server">
+  </div>
 </script>
 
 <script type="text/x-red" data-help-name="jira-issue-update">
-    <p>A node to perform issue updates via JIRAs REST API.</p>
-    <p>
-        <ul>
-            <li><code>msg.key</code> must contain the ticket ID you want to update</li>
-            <li><code>msg.payload</code> must contain the update parameters as specified in <code>/rest/api/2/issue/{issueIdOrKey}/editmeta</code></li>
-        </ul>
-    </p>
+  <p>A node to perform issue updates via JIRAs REST API.</p>
+  <p>
+    <ul>
+      <li><code>msg.key</code> must contain the ticket ID you want to update</li>
+      <li><code>msg.payload</code> must contain the update parameters as specified in <code>/rest/api/2/issue/{issueIdOrKey}/editmeta</code></li>
+    </ul>
+  </p>
 </script>
 
 
-
-
-
+<!-- *************** Issue-Get Node *************** -->
+<script type="text/javascript">
+  RED.nodes.registerType('jira-issue-get', {
+    category: 'jira',
+    color: '#a6bbcf',
+    defaults: {
+      name: {
+        value: ""
+      },
+      server: {
+        value: "",
+        type: "jira-server"
+      },
+      body: {
+        value: "payload"
+      },
+      key: {
+        value: "topic"
+      }
+    },
+    inputs: 1,
+    outputs: 1,
+    icon: "db.png",
+    label: function() {
+      return this.name || "jira-issue-get";
+    }
+  });
+</script>
 <script type="text/x-red" data-template-name="jira-issue-get">
-    <div class="form-row">
-        <label for="node-input-name"><i class="icon-tag"></i> Name</label>
-        <input type="text" id="node-input-name" placeholder="Name">
-    </div>
-    <div class="form-row">
-        <label for="node-input-server"><i class="icon-db"></i> Server</label>
-        <input type="text" id="node-input-server" placeholder="Server">
-    </div>
-    <div class="form-row">
-        <label for="node-input-key"><i class="icon-db"></i> Attr. Issue Key</label>
-        <input type="text" id="node-input-key" placeholder="Property">
-    </div>
-    <div class="form-row">
-        <label for="node-input-body"><i class="icon-db"></i> Attr. Issue</label>
-        <input type="text" id="node-input-body" placeholder="Property">
-    </div>
+  <div class="form-row">
+    <label for="node-input-name"><i class="icon-tag"></i> Name</label>
+    <input type="text" id="node-input-name" placeholder="Name">
+  </div>
+  <div class="form-row">
+    <label for="node-input-server"><i class="icon-db"></i> Server</label>
+    <input type="text" id="node-input-server" placeholder="Server">
+  </div>
+  <div class="form-row">
+    <label for="node-input-key"><i class="icon-db"></i> Attr. Issue Key</label>
+    <input type="text" id="node-input-key" placeholder="Property">
+  </div>
+  <div class="form-row">
+    <label for="node-input-body"><i class="icon-db"></i> Attr. Issue</label>
+    <input type="text" id="node-input-body" placeholder="Property">
+  </div>
 </script>
 
 <script type="text/x-red" data-help-name="jira-issue-get">
-    <p>A node to get issues via JIRAs REST API.</p>
-    <p>
-        <ul>
-            <li><code>msg.key</code> must contain the ticket ID you want to get</li>
-        </ul>
-    </p>
+  <p>A node to get issues via JIRAs REST API.</p>
+  <p>
+    <ul>
+      <li><code>msg.key</code> must contain the ticket ID you want to get</li>
+    </ul>
+  </p>
 </script>
 
-
-
+<!-- *************** Issue-Create Node *************** -->
+<script type="text/javascript">
+  RED.nodes.registerType('jira-issue-create', {
+    category: 'jira',
+    color: '#a6bbcf',
+    defaults: {
+      name: {
+        value: ""
+      },
+      server: {
+        value: "",
+        type: "jira-server"
+      },
+    },
+    inputs: 1,
+    outputs: 1,
+    icon: "db.png",
+    label: function() {
+      return this.name || "jira-issue-create";
+    }
+  });
+</script>
 <script type="text/x-red" data-template-name="jira-issue-create">
-    <div class="form-row">
-        <label for="node-input-name"><i class="icon-tag"></i> Name</label>
-        <input type="text" id="node-input-name" placeholder="Name">
-    </div>
-    <div class="form-row">
-        <label for="node-input-server"><i class="icon-db"></i> Server</label>
-        <input type="text" id="node-input-server" placeholder="Server">
-    </div>
+  <div class="form-row">
+    <label for="node-input-name"><i class="icon-tag"></i> Name</label>
+    <input type="text" id="node-input-name" placeholder="Name">
+  </div>
+  <div class="form-row">
+    <label for="node-input-server"><i class="icon-db"></i> Server</label>
+    <input type="text" id="node-input-server" placeholder="Server">
+  </div>
 </script>
 
 <script type="text/x-red" data-help-name="jira-issue-create">
 
-    <p>A node to create issues via JIRAs REST API. See <a href="https://docs.atlassian.com/jira/REST/cloud/#api/2/issue-createIssue" target="_blank">JIRA Documentation</a> for details about the payload format.</p>
-    <p>
-        <h1>Input</h1>
-        <ul>
-            <li><code>msg.payload</code> must contain the ticket structure you want to create.</li>
-        </ul>
-    </p>
-    <p>
-        <h1>Output</h1> The input message is feed through, but the following properties will be substituded:
-        <ul>
-            <li><code>msg.topic</code> Key of the issue that was created</li>
-        </ul>
-    </p>
+  <p>A node to create issues via JIRAs REST API. See <a href="https://docs.atlassian.com/jira/REST/cloud/#api/2/issue-createIssue" target="_blank">JIRA Documentation</a> for details about the payload format.</p>
+  <p>
+    <h1>Input</h1>
+    <ul>
+      <li><code>msg.payload</code> must contain the ticket structure you want to create.</li>
+    </ul>
+  </p>
+  <p>
+    <h1>Output</h1> The input message is feed through, but the following properties will be substituded:
+    <ul>
+      <li><code>msg.topic</code> Key of the issue that was created</li>
+    </ul>
+  </p>
 </script>
 
-
-
-
+<!-- *************** Issue-Comment-Add Node *************** -->
+<script type="text/javascript">
+  RED.nodes.registerType('jira-issue-comment-add', {
+    category: 'jira',
+    color: '#a6bbcf',
+    defaults: {
+      name: {
+        value: ""
+      },
+      server: {
+        value: "",
+        type: "jira-server"
+      },
+    },
+    inputs: 1,
+    outputs: 1,
+    icon: "db.png",
+    label: function() {
+      return this.name || "jira-issue-comment-add";
+    }
+  });
+</script>
 <script type="text/x-red" data-template-name="jira-issue-comment-add">
-    <div class="form-row">
-        <label for="node-input-name"><i class="icon-tag"></i> Name</label>
-        <input type="text" id="node-input-name" placeholder="Name">
-    </div>
-    <div class="form-row">
-        <label for="node-input-server"><i class="icon-db"></i> Server</label>
-        <input type="text" id="node-input-server" placeholder="Server">
-    </div>
+  <div class="form-row">
+    <label for="node-input-name"><i class="icon-tag"></i> Name</label>
+    <input type="text" id="node-input-name" placeholder="Name">
+  </div>
+  <div class="form-row">
+    <label for="node-input-server"><i class="icon-db"></i> Server</label>
+    <input type="text" id="node-input-server" placeholder="Server">
+  </div>
 </script>
 
 <script type="text/x-red" data-help-name="jira-issue-comment-add">
-    <p>A node to create issue comments via JIRAs REST API. See <a href="https://docs.atlassian.com/jira/REST/cloud/#api/2/issue-addComment" target="_blank">JIRA Documentation</a> for details about the payload format.</p>
-    <p>
-        <h1>Input</h1>
-        <ul>
-            <li><code>msg.payload</code> must contain the comment structure you want to add.</li>
-            <li><code>msg.topic</code> must contain the ticket id you want to add the comment to</li>
-        </ul>
-    </p>
-    <p>
-        <h1>Output</h1> The input message is feed through, but the following properties will be substituded:
-        <ul>
-            <li><code>msg.payload</code> Response structure as defined in JIRA REST specification</li>
-        </ul>
-    </p>
+  <p>A node to create issue comments via JIRAs REST API. See <a href="https://docs.atlassian.com/jira/REST/cloud/#api/2/issue-addComment" target="_blank">JIRA Documentation</a> for details about the payload format.</p>
+  <p>
+    <h1>Input</h1>
+    <ul>
+      <li><code>msg.payload</code> must contain the comment structure you want to add.</li>
+      <li><code>msg.topic</code> must contain the ticket id you want to add the comment to</li>
+    </ul>
+  </p>
+  <p>
+    <h1>Output</h1> The input message is feed through, but the following properties will be substituded:
+    <ul>
+      <li><code>msg.payload</code> Response structure as defined in JIRA REST specification</li>
+    </ul>
+  </p>
 
 </script>
 
 
-
+<!-- *************** Issue-Comment-Update Node *************** -->
+<script type="text/javascript">
+  RED.nodes.registerType('jira-issue-comment-update', {
+    category: 'jira',
+    color: '#a6bbcf',
+    defaults: {
+      name: {
+        value: ""
+      },
+      server: {
+        value: "",
+        type: "jira-server"
+      },
+    },
+    inputs: 1,
+    outputs: 1,
+    icon: "db.png",
+    label: function() {
+      return this.name || "jira-issue-comment-update";
+    }
+  });
+</script>
 
 <script type="text/x-red" data-template-name="jira-issue-comment-update">
-    <div class="form-row">
-        <label for="node-input-name"><i class="icon-tag"></i> Name</label>
-        <input type="text" id="node-input-name" placeholder="Name">
-    </div>
-    <div class="form-row">
-        <label for="node-input-server"><i class="icon-db"></i> Server</label>
-        <input type="text" id="node-input-server" placeholder="Server">
-    </div>
+  <div class="form-row">
+    <label for="node-input-name"><i class="icon-tag"></i> Name</label>
+    <input type="text" id="node-input-name" placeholder="Name">
+  </div>
+  <div class="form-row">
+    <label for="node-input-server"><i class="icon-db"></i> Server</label>
+    <input type="text" id="node-input-server" placeholder="Server">
+  </div>
 </script>
 
 <script type="text/x-red" data-help-name="jira-issue-comment-update">
-    <p>A node to update issue comments via JIRAs REST API. See <a href="https://docs.atlassian.com/jira/REST/cloud/#api/2/issue-updateComment" target="_blank">JIRA Documentation</a> for details about the payload format.</p>
-    <p>
-        <h1>Input</h1>
-        <ul>
-            <li><code>msg.payload</code> must contain the comment structure you want to add.</li>
-            <li><code>msg.topic</code> must contain the ticket id you want to add the comment to</li>
-        </ul>
-    </p>
-    <p>
-        <h1>Output</h1> The input message is feed through, but the following properties will be substituded:
-        <ul>
-            <li><code>msg.payload</code> Response structure as defined in JIRA REST specification</li>
-        </ul>
-    </p>
+  <p>A node to update issue comments via JIRAs REST API. See <a href="https://docs.atlassian.com/jira/REST/cloud/#api/2/issue-updateComment" target="_blank">JIRA Documentation</a> for details about the payload format.</p>
+  <p>
+    <h1>Input</h1>
+    <ul>
+      <li><code>msg.payload</code> must contain the comment structure you want to add.</li>
+      <li><code>msg.topic</code> must contain the ticket id you want to add the comment to</li>
+    </ul>
+  </p>
+  <p>
+    <h1>Output</h1> The input message is feed through, but the following properties will be substituded:
+    <ul>
+      <li><code>msg.payload</code> Response structure as defined in JIRA REST specification</li>
+    </ul>
+  </p>
 
 </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
