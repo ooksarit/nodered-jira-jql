@@ -46,19 +46,18 @@ module.exports = function(RED) {
     function JiraSearchNode(config) {
         RED.nodes.createNode(this, config);
         var node = this;
-        var jql = config.jql;
+        //var jql = config.jql;
         var server = RED.nodes.getNode(config.server);
         var maxIssues = config.pagesize || 1000;
 
 
         this.on('input', function(msg) {
+            var jql = config.jql || msg.jql;
             this.log("Performing search '" + jql + "'");
             node.perform(jql, function(issue, index, array) {
-                var msg={};
                 msg.topic = issue.key;
-                msg.payload = issue;
+                msg.result = issue;
                 node.send(msg);
-
             });
         });
 
@@ -68,7 +67,7 @@ module.exports = function(RED) {
             var options = {
                 "startAt": startIndex,
                 "maxResults": maxIssues,
-                "fields": ["key", "title", "summary", "labels", "status", "issuetype", "description", "reporter", "created", "environment","priority","comment"]
+                "fields": ["key", "title", "summary", "labels", "status", "issuetype", "description", "reporter", "created", "environment","priority","comment", "project"]
             };
             var rqcallback = function(errors, response, body) {
                 if (errors) {

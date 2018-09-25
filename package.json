@@ -1,22 +1,24 @@
 {
-  "name": "node-red-contrib-jira",
+  "name": "node-red-contrib-jira-jql",
   "version": "0.0.1",
-  "description": "Nodes for using JIRA REST API",
+  "description": "Nodes for using JIRA REST API - Modify from node-red-contrib-jira (Michael Kolb)",
   "license": "GPL-3.0",
   "author": {
-    "name":"Michael Kolb",
-    "email":"dev@db1smk.com",
-    "url":"https://github.com/kwave/"
+    "name": "Sarit Udomjiaranai",
+    "email": "osaritu@gmail.com",
+    "url": "..."
   },
-  "repository":{
-    "type":"git",
-    "url":"https://github.com/kwave/nodered-jira.git"
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ooksarit/nodered-jira"
   },
   "dependencies": {
     "request": "2.79.0",
     "debug": "2.6.0"
   },
-  "keywords": ["node-red"],
+  "keywords": [
+    "node-red"
+  ],
   "node-red": {
     "nodes": {
       "sample": "jira/jira.js"
