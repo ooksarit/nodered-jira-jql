@@ -57,7 +57,8 @@ module.exports = function(RED) {
             node.perform(jql, function(issue, index, array) {
                 msg.topic = issue.key;
                 msg.result = issue;
-                node.send(RED.util.generateId(), msg);
+                msg._msgid = RED.util.generateId();
+                node.send(msg);
             });
         });
 
