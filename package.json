@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "request": "2.79.0",
-    "debug": "2.6.0"
+    "debug": "2.6.9"
   },
   "keywords": [
     "node-red"
